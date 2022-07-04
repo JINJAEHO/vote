@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import com.wogh.vote.dto.BoardDTO;
 import com.wogh.vote.dto.MemberDTO;
 import com.wogh.vote.dto.PageRequestBoardDTO;
+import com.wogh.vote.dto.PageResponseBoardDTO;
 import com.wogh.vote.dto.VoteItemDTO;
 import com.wogh.vote.model.Board;
 import com.wogh.vote.model.Member;
@@ -27,7 +28,9 @@ public interface BoardService {
 	
 	public Long deleteBoard(BoardDTO dto);
 	
-	public Page<Board> getList(PageRequestBoardDTO dto);
+	public PageResponseBoardDTO getList(PageRequestBoardDTO dto);
+	
+	List<BoardDTO> mostPopluar();
 	
 	public default Board dtoToEntity(BoardDTO dto) {
 		Board board = Board.builder().bno(dto.getBno())
@@ -40,23 +43,29 @@ public interface BoardService {
 		return board;
 	}
 	
-	public default BoardDTO entityToDto(Board board) {
-		List<Long> voteIdList = new ArrayList<>();
-		List<Integer> voteCountList = new ArrayList<>();
-		for(VoteItem item : board.getItems()) {
-			voteIdList.add(item.getIno());
-			voteCountList.add(item.getCount());
+	public default BoardDTO entityToDto(Board board, int check) {
+		List<VoteItemDTO> voteItem = new ArrayList<>();
+		if(check == 1) {
+			for(VoteItem item : board.getItems()) {
+				VoteItemDTO itemDTO = VoteItemDTO.builder().ino(item.getIno())
+														.item(item.getItem())
+														.count(item.getCount()).build();
+				voteItem.add(itemDTO);
+			}
 		}
-		
+		Member member = new Member();
+		if(check == 0) {
+			member = board.getMember();
+		}
 		BoardDTO dto = BoardDTO.builder().bno(board.getBno())
 										.title(board.getTitle())
 										.description(board.getDescription())
 										.closetime(board.getClosetime())
 										.anonymous(board.isAnonymous())
-										.member_id(board.getMember().getMno())
-										.member_nickname(board.getMember().getNickname())
-										.voteIdList(voteIdList)
-										.voteCountList(voteCountList)
+										.member_id(member.getMno())
+										.member_email(member.getEmail())
+										.member_nickname(member.getNickname())
+										.voteItem(voteItem)
 										.build();
 		return dto;
 	}

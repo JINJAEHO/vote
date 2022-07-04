@@ -33,6 +33,9 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-java8time'
 	
+	// https://mvnrepository.com/artifact/org.thymeleaf/thymeleaf
+	implementation group: 'org.thymeleaf', name: 'thymeleaf'
+	
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	
 	// QueryDSL

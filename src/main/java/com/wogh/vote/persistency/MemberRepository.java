@@ -13,4 +13,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 	
 	//닉네임으로 조회
 	List<Member> findByNickname(String nickname);
+	
+	//이메일로 삭제
+	void deleteByEmail(String email);
 }

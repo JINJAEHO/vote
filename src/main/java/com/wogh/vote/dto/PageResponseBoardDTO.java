@@ -6,14 +6,12 @@ import java.util.stream.IntStream;
 
 import org.springframework.data.domain.Pageable;
 
-import com.wogh.vote.model.Board;
-
 import lombok.Data;
 
 @Data
 public class PageResponseBoardDTO {
 	//DTO 리스트
-	private List<Board> boardList;
+	private List<BoardDTO> boardList;
 	//전체 페이지 개수
 	private int totalPage;
 	//현재 페이지 번호

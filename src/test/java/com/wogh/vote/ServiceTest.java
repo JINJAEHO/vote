@@ -50,8 +50,7 @@ public class ServiceTest {
 	public void getBoardTest() {
 		BoardDTO dto = BoardDTO.builder().bno(21L).build();
 		BoardDTO result = boardService.getBoard(dto);
-		System.out.println(result.getVoteIdList());
-		System.out.println(result.getVoteCountList());
+
 	}
 	
 	//@Test
@@ -62,14 +61,12 @@ public class ServiceTest {
 		System.out.println(page.getContent().get(0).getBno());
 	}
 	
-	//@Test
-	public void getListTest() {
-		PageRequestBoardDTO dto = PageRequestBoardDTO.builder().page(1).size(3)
-														.keyword("1")
-														.type("w")
-														.build();
-		Page<Board> page = boardService.getList(dto);
-		System.out.println(page.getContent());
+	@Test
+	public void topTest() {
+		List<BoardDTO> list = boardService.mostPopluar();
+		for(BoardDTO dto : list) {
+			System.out.println(dto.getMember_nickname());
+		}
 	}
 	
 	@Autowired

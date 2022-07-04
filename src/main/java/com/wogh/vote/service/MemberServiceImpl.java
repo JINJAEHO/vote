@@ -77,7 +77,7 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public String updateMember(MemberDTO memberDTO) {
 		Member findMember = memberRepository.findByEmail(memberDTO.getEmail()).get(0);
-		findMember.updateMember(memberDTO.getPassword(), memberDTO.getName(), 
+		findMember.changeMember(memberDTO.getPassword(), memberDTO.getName(), 
 				memberDTO.getNickname(), memberDTO.isOfficialmark());
 		
 		return findMember.getEmail();
@@ -85,8 +85,7 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public String deleteMember(MemberDTO memberDTO) {
-		Member findMember = memberRepository.findByEmail(memberDTO.getEmail()).get(0);
-		memberRepository.deleteById(findMember.getMno());
+		memberRepository.deleteByEmail(memberDTO.getEmail());
 		return memberDTO.getEmail();
 	}
 

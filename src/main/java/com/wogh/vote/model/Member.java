@@ -40,7 +40,7 @@ public class Member extends BaseEntity{
 	@Column(name = "officialmark", columnDefinition = "boolean default false")
 	private boolean officialmark;
 
-	public void updateMember(String password, String name, String nickname, boolean officialmark) {
+	public void changeMember(String password, String name, String nickname, boolean officialmark) {
 		if(password != null) this.password = password;
 		if(name != null) this.name = name;
 		if(nickname != null) this.nickname = nickname;

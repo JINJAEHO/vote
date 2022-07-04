@@ -25,13 +25,13 @@ public class BoardDTO {
 	
 	private Long member_id;
 	
+	private String member_email;
+	
 	private String member_nickname;
 	
 	private LocalDateTime regdate;
 	
 	private LocalDateTime moddate;
 	
-	private List<Long> voteIdList;
-	
-	private List<Integer> voteCountList;
+	private List<VoteItemDTO> voteItem;
 }
