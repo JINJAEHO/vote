@@ -18,6 +18,7 @@ public interface MemberService {
 	
 	//로그인
 	public int memberLogin(MemberDTO memberDTO);
+
 	public MemberDTO getMember(MemberDTO memberDTO);
 	public String updateMember(MemberDTO memberDTO);
 	public String deleteMember(MemberDTO memberDTO);

@@ -61,7 +61,7 @@ public class ServiceTest {
 		System.out.println(page.getContent().get(0).getBno());
 	}
 	
-	@Test
+	//@Test
 	public void topTest() {
 		List<BoardDTO> list = boardService.mostPopluar();
 		for(BoardDTO dto : list) {
@@ -83,9 +83,10 @@ public class ServiceTest {
 	
 	//@Test
 	public void throwVoteTest() {
-		VoteItemDTO dto = VoteItemDTO.builder().ino(2L).build();
+		VoteItemDTO dto = VoteItemDTO.builder().ino(61L).board_num(31L).build();
 		String email = "wogh3@gmail.com";
 		String res = itemService.throwVote(dto, email);
 		System.out.println(res);
 	}
+	
 }

@@ -158,8 +158,8 @@ public class BoardServiceImpl implements BoardService {
 		Page<Board> page = boardRepository.searchByDynamicQuery(dto);
 		
 		PageResponseBoardDTO result = new PageResponseBoardDTO();
-		result.makePageList(pageable);
 		result.setTotalPage(page.getTotalPages());
+		result.makePageList(pageable);
 		List<BoardDTO> list = new ArrayList<>();
 		page.get().forEach(item -> {
 			list.add(entityToDto(item, 0));

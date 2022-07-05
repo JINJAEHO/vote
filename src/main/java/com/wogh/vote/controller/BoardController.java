@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.wogh.vote.dto.BoardDTO;
 import com.wogh.vote.dto.PageRequestBoardDTO;
@@ -48,7 +47,6 @@ public class BoardController {
 			String email = (String)session.getAttribute("userId");
 			model.addAttribute("email", email);
 		}
-		return;
 	}
 	
 	@PostMapping("/register")
@@ -68,14 +66,17 @@ public class BoardController {
 	}
 	
 	@GetMapping("/list")
-	public String boardPage(@RequestParam(required = false) PageRequestBoardDTO dto, Model model) {
+	public String boardPage(PageRequestBoardDTO dto, Model model) {
 		log.info(dto);
 		if(dto == null) {
 			dto = new PageRequestBoardDTO();
 		}
 		
 		PageResponseBoardDTO response = boardService.getList(dto);
+		//System.out.println(response.getPageList());
 		model.addAttribute("list", response.getBoardList());
+		model.addAttribute("page", response);
+		model.addAttribute("search", dto);
 		return "board/list";
 	}
 	

@@ -39,6 +39,8 @@ public class Board extends BaseEntity {
 	
 	private boolean anonymous;
 	
+	private boolean dead;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
 	private Member member;

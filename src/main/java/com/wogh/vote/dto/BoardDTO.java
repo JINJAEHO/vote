@@ -23,6 +23,8 @@ public class BoardDTO {
 	
 	private boolean anonymous;
 	
+	private boolean dead;
+	
 	private Long member_id;
 	
 	private String member_email;

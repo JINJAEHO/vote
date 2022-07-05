@@ -1,0 +1,19 @@
+@charset "UTF-8";
+
+.main-content{
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+}
+
+.item-add-btn-group{
+	width: 100%;
+	display: flex;
+	justify-content: center;
+}
+
+.con-btn-gruop{
+	width: 100%;
+	display: flex;
+	justify-content: flex-end;
+}

@@ -66,6 +66,20 @@ public class ItemServiceImpl implements ItemService {
 	
 	@Override //실제 투표 처리
 	public String throwVote(VoteItemDTO itemDTO, String email) {
+		List<VoteItem> list = itemRepository.findByBno(itemDTO.getBoard_num());
+		//이미 투표했는지 여부 확인
+		boolean checkVote = false;
+		for(VoteItem item : list) {
+			Optional<VoteDetail> optional = detailRepository.findByVoterAndIno(email, item.getIno());
+			if(optional.isPresent()) {
+				checkVote = true;
+				break;
+			}
+		}
+		if(checkVote) { //기투표자
+			return "참여한투표";
+		}
+	
 		VoteItem item = itemRepository.findById(itemDTO.getIno()).get();
 		
 		VoteDetail detail = VoteDetail.builder().voter(email)

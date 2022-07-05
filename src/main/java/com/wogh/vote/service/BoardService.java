@@ -61,6 +61,7 @@ public interface BoardService {
 										.title(board.getTitle())
 										.description(board.getDescription())
 										.closetime(board.getClosetime())
+										.dead(board.isDead())
 										.anonymous(board.isAnonymous())
 										.member_id(member.getMno())
 										.member_email(member.getEmail())

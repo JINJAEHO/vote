@@ -28,7 +28,7 @@ public class MemberServiceImpl implements MemberService {
 	
 	@Override
 	public String checkNickname(String nickname) {
-		List<Member> findMember = memberRepository.findByEmail(nickname);
+		List<Member> findMember = memberRepository.findByNickname(nickname);
 		if(findMember.size() > 0) {
 			return "사용불가";
 		}

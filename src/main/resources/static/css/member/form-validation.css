@@ -1,0 +1,8 @@
+.container {
+  max-width: 960px;
+}
+
+.btn-lg{
+	background-color: #212529;
+	border-color: #212529;
+}

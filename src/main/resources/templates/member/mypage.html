@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author"
+	content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+<meta name="generator" content="Hugo 0.84.0">
+<title>회원 정보</title>
+
+<link rel="canonical"
+	href="https://getbootstrap.com/docs/5.0/examples/checkout/">
+
+<!-- Bootstrap core CSS -->
+<link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+.bd-placeholder-img {
+	font-size: 1.125rem;
+	text-anchor: middle;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
+}
+
+@media ( min-width : 768px) {
+	.bd-placeholder-img-lg {
+		font-size: 3.5rem;
+	}
+}
+</style>
+
+<!-- Custom styles for this template -->
+<link href="http://localhost/css/member/form-validation.css"
+	rel="stylesheet">
+</head>
+<body class="bg-light">
+
+	<div class="container">
+		<main>
+			<div class="py-5 text-center">
+				<h2>회원 정보</h2>
+			</div>
+			<div class="col-md-7 col-lg-8">
+				<form class="needs-validation member-info">
+					<div class="row g-3">
+						<div class="col-12">
+							<label for="email" class="form-label">Email</label>
+							<input type="text" name="email" class="form-control" id="email" 
+								th:value="${memberDTO.email}" readonly="readonly"/>
+						</div>
+						<div class="col-12">
+							<label for="password" class="form-label">비밀번호</label>
+							<input type="password" class="form-control" id="password" 
+								value="" readonly="readonly"/>
+							<input type="hidden" name="password" th:value="${memberDTO.password}">
+						</div>
+						<div class="col-12">
+							<label for="firstName" class="form-label">이름</label> 
+							<input type="text" class="form-control" id="firstName" name="name"
+								th:value="${memberDTO.name}" readonly="readonly"/>
+						</div>
+						<div class="col-12">
+							<label for="username" class="form-label">닉네임</label>
+							<input type="text" name="nickname" class="form-control" id="nickname"
+								th:value="${memberDTO.nickname}" readonly="readonly"/>
+						</div>
+					</div>
+
+					<hr class="my-4">
+
+					<button class="w-100 btn btn-primary btn-lg" type="button">수정</button>
+				</form>
+			</div>
+		</main>
+
+		<footer class="my-5 pt-5 text-muted text-center text-small">
+			<ul class="list-inline">
+				<li class="list-inline-item"><a href="#">Privacy</a></li>
+				<li class="list-inline-item"><a href="#">Terms</a></li>
+				<li class="list-inline-item"><a href="#">Support</a></li>
+			</ul>
+		</footer>
+	</div>
+
+	<script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+	<script type="text/javascript">
+		const btnLg = document.querySelector(".btn-lg");
+		btnLg.addEventListener('click', () => {
+			let email = document.querySelector("#email").value;
+			location.href="/member/modify?email="+email;
+		});
+	</script>
+</body>
+</html>
