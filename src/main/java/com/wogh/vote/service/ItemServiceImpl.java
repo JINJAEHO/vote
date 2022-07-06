@@ -1,11 +1,11 @@
 package com.wogh.vote.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
@@ -48,35 +48,51 @@ public class ItemServiceImpl implements ItemService {
 			}else canModifyItem = true;
 		}
 		
+		//수정가능
 		if(canModifyItem) return 1;
 		
+		//수정불가
 		return 0;
 	}
 	
 	@Override // 투표 항목 수정 처리
 	public void itemUpdate(List<VoteItemDTO> itemDTO) {
-		List<VoteItem> list = new ArrayList<>();
 		for(VoteItemDTO dto : itemDTO) {
-			VoteItem item = dtoToEntity(dto);
-			list.add(item);
+			VoteItem item = new VoteItem();
+			if(dto.getIno() != null) {
+				item = itemRepository.findById(dto.getIno()).get();
+			}else {
+				dto.setCount(0);
+				item = dtoToEntity(dto);
+			}
+			itemRepository.save(item);
 		}
-		// 투표 항목은 추가도 가능하기에 save로 처리
-		itemRepository.saveAll(list);
 	}
 	
-	@Override //실제 투표 처리
-	public String throwVote(VoteItemDTO itemDTO, String email) {
+	@Override
+	public void deleteItem(VoteItemDTO itemDTO) {
+		itemRepository.deleteById(itemDTO.getIno());
+	}
+	
+	@Override
+	public Long votedItem(VoteItemDTO itemDTO, String email) {
 		List<VoteItem> list = itemRepository.findByBno(itemDTO.getBoard_num());
 		//이미 투표했는지 여부 확인
-		boolean checkVote = false;
 		for(VoteItem item : list) {
 			Optional<VoteDetail> optional = detailRepository.findByVoterAndIno(email, item.getIno());
 			if(optional.isPresent()) {
-				checkVote = true;
-				break;
+				return item.getIno();
 			}
 		}
-		if(checkVote) { //기투표자
+		return null;
+	}
+	
+	@Transactional
+	@Override //실제 투표 처리
+	public String throwVote(VoteItemDTO itemDTO, String email) {
+		Long ino = votedItem(itemDTO, email);
+		
+		if(ino != null) { //기투표자
 			return "참여한투표";
 		}
 	
@@ -86,7 +102,7 @@ public class ItemServiceImpl implements ItemService {
 											.voteitem(item)
 											.build();
 		// save를 하면 commit이 되기 때문에 EntityManager의 persist를 이용
-		em.persist(detail);
+		detailRepository.save(detail);
 		
 		VoteDetail result = null;
 		

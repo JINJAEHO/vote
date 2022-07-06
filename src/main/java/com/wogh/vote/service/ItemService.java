@@ -16,10 +16,16 @@ public interface ItemService {
 	
 	public String throwVote(VoteItemDTO itemDTO, String email);
 	
+	Long votedItem(VoteItemDTO itemDTO, String email);
+	
+	//투표항목 삭제
+	void deleteItem(VoteItemDTO itemDTO);
+	
 	public default VoteItem dtoToEntity(VoteItemDTO dto) {
 		VoteItem item = VoteItem.builder().ino(dto.getIno())
 										.item(dto.getItem())
 										.imageurl(dto.getImageurl())
+										.count(dto.getCount())
 										.board(Board.builder().bno(dto.getBoard_num()).build())
 										.build();
 		return item;
@@ -29,6 +35,7 @@ public interface ItemService {
 		VoteItemDTO dto = VoteItemDTO.builder().ino(item.getIno())
 												.item(item.getItem())
 												.imageurl(item.getImageurl())
+												.count(item.getCount())
 												.board_num(item.getBoard().getBno())
 												.build();
 		return dto;

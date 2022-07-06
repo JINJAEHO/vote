@@ -1,5 +1,7 @@
 package com.wogh.vote.service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,14 +31,23 @@ public interface BoardService {
 	public Long deleteBoard(BoardDTO dto);
 	
 	public PageResponseBoardDTO getList(PageRequestBoardDTO dto);
+	//팔로워 최근 게시글 조회
+	BoardDTO getFollowerLatest(Long mno);
+	
+	//마감 체크
+	void checkClose();
 	
 	List<BoardDTO> mostPopluar();
 	
 	public default Board dtoToEntity(BoardDTO dto) {
+		String str = dto.getClosetime();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		LocalDateTime closetime = LocalDateTime.parse(str, formatter);
+		
 		Board board = Board.builder().bno(dto.getBno())
 									.title(dto.getTitle())
 									.description(dto.getDescription())
-									.closetime(dto.getClosetime())
+									.closetime(closetime)
 									.anonymous(dto.isAnonymous())
 									.member(Member.builder().mno(dto.getMember_id()).build())
 									.build();
@@ -44,6 +55,9 @@ public interface BoardService {
 	}
 	
 	public default BoardDTO entityToDto(Board board, int check) {
+		String closetime = board.getClosetime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+		Member member = new Member();
+		
 		List<VoteItemDTO> voteItem = new ArrayList<>();
 		if(check == 1) {
 			for(VoteItem item : board.getItems()) {
@@ -52,15 +66,21 @@ public interface BoardService {
 														.count(item.getCount()).build();
 				voteItem.add(itemDTO);
 			}
-		}
-		Member member = new Member();
-		if(check == 0) {
+		}else if(check == 0) {
+			member = board.getMember();
+		}else if(check == 2) {
+			for(VoteItem item : board.getItems()) {
+				VoteItemDTO itemDTO = VoteItemDTO.builder().ino(item.getIno())
+														.item(item.getItem())
+														.count(item.getCount()).build();
+				voteItem.add(itemDTO);
+			}
 			member = board.getMember();
 		}
 		BoardDTO dto = BoardDTO.builder().bno(board.getBno())
 										.title(board.getTitle())
 										.description(board.getDescription())
-										.closetime(board.getClosetime())
+										.closetime(closetime)
 										.dead(board.isDead())
 										.anonymous(board.isAnonymous())
 										.member_id(member.getMno())

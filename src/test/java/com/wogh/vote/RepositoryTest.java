@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 
+import com.wogh.vote.model.Member;
 import com.wogh.vote.model.VoteItem;
 import com.wogh.vote.persistency.BoardRepository;
 import com.wogh.vote.persistency.VoteDetailRepository;
@@ -23,6 +25,13 @@ public class RepositoryTest {
 	
 	@Autowired
 	private BoardRepository boardRepository;
+	
+	//@Test
+	public void followBoadTest() {
+		Sort sort = Sort.by("bno").descending();
+		Member member = Member.builder().mno(5L).build();
+		boardRepository.findByFollow(member, PageRequest.of(0, 1, sort));
+	}
 	
 	//@Test
 	public void topTest() {
@@ -41,7 +50,7 @@ public class RepositoryTest {
 	@Autowired
 	private VoteDetailRepository detailRepository;
 	
-	@Test
+	//@Test
 	public void testVoterAndIno() {
 		detailRepository.findByVoterAndIno("wogh3@gmail.com", 2L);
 	}

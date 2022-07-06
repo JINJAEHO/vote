@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.wogh.vote.dto.FollowDTO;
 import com.wogh.vote.dto.MemberDTO;
 import com.wogh.vote.service.MemberService;
 
@@ -154,5 +155,18 @@ public class MemberController {
 		
 		memberService.deleteMember(dto);
 		return "redirect:/";
+	}
+	
+	//팔로우 처리
+	@ResponseBody
+	@PostMapping("/follow")
+	public JSONObject followPro(@RequestBody FollowDTO dto) {
+		String result = memberService.followMember(dto);
+		
+		Map<String, String> map = new HashMap<>();
+		map.put("result", result);
+		JSONObject json = new JSONObject(map);
+		
+		return json;
 	}
 }

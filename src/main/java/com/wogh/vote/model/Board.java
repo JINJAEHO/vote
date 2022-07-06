@@ -53,4 +53,8 @@ public class Board extends BaseEntity {
 		if(this.description != description && description != null) this.description = description;
 		if(this.closetime != closetime && closetime != null) this.closetime = closetime;
 	}
+	
+	public void closeBoard() {
+		this.dead = true;
+	}
 }

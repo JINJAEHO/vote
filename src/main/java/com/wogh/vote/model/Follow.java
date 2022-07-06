@@ -26,9 +26,9 @@ public class Follow {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long fno;
 	
-	private String followingemail;
+	private String you;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_email")
+	@JoinColumn(name = "me")
 	private Member member;
 }

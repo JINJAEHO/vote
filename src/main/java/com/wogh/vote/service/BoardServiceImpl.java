@@ -99,7 +99,8 @@ public class BoardServiceImpl implements BoardService {
 			LocalDateTime currentDateTime = nowUTC.withZoneSameInstant(
 											ZoneId.of("Asia/Seoul")).toLocalDateTime();
 			LocalDateTime closetime = currentDateTime.plusHours(24);
-			boardDTO.setClosetime(closetime);
+			String cltime = closetime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+			boardDTO.setClosetime(cltime);
 		}
 
 		// Board 정보 DB에 저장
@@ -113,7 +114,7 @@ public class BoardServiceImpl implements BoardService {
 		for(VoteItemDTO dto : itemDTO) {
 			VoteItem item = VoteItem.builder().item(dto.getItem())
 												.imageurl(dto.getImageurl())
-												.board(board).build();
+												.board(board).count(0).build();
 			list.add(item);
 		}
 		itemRepository.saveAll(list);
@@ -127,7 +128,7 @@ public class BoardServiceImpl implements BoardService {
 		Optional<Board> optional = boardRepository.findByIdWithJoin(bno);
 		
 		if(optional.isPresent()) {
-			return entityToDto(optional.get(), 1);
+			return entityToDto(optional.get(), 2);
 		}
 		return null;
 	}
@@ -141,7 +142,9 @@ public class BoardServiceImpl implements BoardService {
 	@Override //글 수정
 	public Long updateBoard(BoardDTO dto) {
 		Board findBoard = boardRepository.findById(dto.getBno()).get();
-		findBoard.changeBoard(dto.getTitle(), dto.getDescription(), dto.getClosetime());
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		LocalDateTime closetime = LocalDateTime.parse(dto.getClosetime(), formatter);
+		findBoard.changeBoard(dto.getTitle(), dto.getDescription(), closetime);
 		return dto.getBno();
 	}
 	
@@ -175,9 +178,29 @@ public class BoardServiceImpl implements BoardService {
 		List<BoardDTO> result = new ArrayList<>();
 		
 		for(Board board : list) {
-			result.add(entityToDto(board, 2));
+			result.add(entityToDto(board, 3));
 		}
 		
 		return result;
+	}
+	
+	@Override
+	public void checkClose() {
+		LocalDateTime now = LocalDateTime.now();
+		List<Board> findList = boardRepository.checkClose(now);
+		
+		for(Board board : findList) {
+			board.closeBoard();
+		}
+	}
+	
+	@Override //팔로워 최근 게시글
+	public BoardDTO getFollowerLatest(Long mno) {
+		Member member = Member.builder().mno(mno).build();
+		Sort sort = Sort.by("bno").descending();
+		Pageable pageable = PageRequest.of(0, 1, sort);
+		Page<Board> page = boardRepository.findByFollow(member, pageable);
+		
+		return entityToDto(page.getContent().get(0), 0);
 	}
 }

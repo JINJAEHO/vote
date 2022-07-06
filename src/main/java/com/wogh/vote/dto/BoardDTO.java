@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class BoardDTO {
 	private Long bno;
 	
-	private LocalDateTime closetime;
+	private String closetime;
 	
 	private String title;
 	

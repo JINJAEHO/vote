@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta name="description" content="" />
+<meta name="author" content="" />
+<title>투표 작성</title>
+<!-- Favicon-->
+<link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+<!-- Bootstrap icons-->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
+	rel="stylesheet" />
+<!-- Core theme CSS (includes Bootstrap)-->
+<link href="http://localhost/css/board/board-styles.css"
+	rel="stylesheet" />
+<link href="http://localhost/css/styles.css" rel="stylesheet" />
+<!-- JQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+	integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+	crossorigin="anonymous"></script>
+<link href="http://localhost/css/datepicker/datepicker.min.css"
+	rel="stylesheet" type="text/css" media="all">
+<script src="http://localhost/js/datepicker/datepicker.js"></script>
+<script src="http://localhost/js/datepicker/datepicker.ko.js"></script>
+<link href="http://localhost/css/board/regi.css" rel="stylesheet">
+</head>
+<body>
+	<div class="whole-container">
+	<!-- Navigation-->
+	<th:block th:replace="/layout/navybar.html :: fragment-navy">
+	</th:block>
+	<!-- Header-->
+	<header class="bg-dark py-5">
+		<div class="container px-4 px-lg-5 my-5">
+			<div class="text-center text-white">
+				<h1 class="display-4 fw-bolder">투표 작성</h1>
+				<p class="lead fw-normal text-white-50 mb-0"></p>
+			</div>
+		</div>
+	</header>
+	<section class="py-5 main-section">
+		<div class="container px-4 px-lg-5 mt-5">
+			<form action="/board/modify" method="POST"
+				class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center main-content">
+				<input type="hidden" name="member_email" th:value="${session.userId}">
+				<input type="hidden" name="bno" th:value="${boardDTO.bno}">
+				<div class="input-group mb-3">
+					<span class="input-group-text" id="basic-addon1" >제목</span> <input
+						type="text" class="form-control" th:value="${boardDTO.title}" name="title"
+						aria-label="Title" aria-describedby="basic-addon1">
+					<div style="margin-left: 50px;">
+						<div class="input-group mb-3">
+							<span class="input-group-text">마감 일자</span> <input type="text"
+								class="form-control" aria-label="Amount (to the nearest dollar)"
+								name="closetime" id="datepicker" th:value="${boardDTO.closetime}">
+						</div>
+					</div>
+				</div>
+				<div class="input-group mb-3">
+					<span class="input-group-text">주제 및 설명</span>
+					<textarea class="form-control" aria-label="With textarea" rows="5" 
+						name="description">[[${boardDTO.description}]]</textarea>
+				</div>
+				<div class="item-container">
+					<div class="input-group mb-3 temp-div" th:each="item : ${list}">
+						<input th:if="${canMod}==1" class="form-control vote-item" 
+							type="text" th:value="${item.item}" name="item">
+						<input th:if="${canMod}==1" class="btn btn-dark del-item" type="button" 
+							value="삭제" onclick="delItem(this)" >
+						<input th:unless="${canMod}==1" class="btn btn-dark del-item" type="hidden" value="삭제" >
+						<input th:unless="${canMod}==1" class="form-control vote-item" 
+							type="text" th:value="${item.item}" readonly name="item">
+						<input type="hidden" name="ino" id="ino" th:value="${item.ino}">
+					</div>
+				</div>
+				<div th:if="${canMod}==1" class="mb-3 item-add-btn-group">
+					<button type="button" class="btn btn-secondary btn-add"
+						style="width: 100px; height: 100px;">항목 추가</button>
+				</div>
+				<input th:unless="${canMod}==1" type="hidden" class="btn btn-secondary btn-add">
+				<div class="mb-3 con-btn-gruop">
+					<button type="submit" class="btn btn-dark btn-regi">수정</button>
+					<button type="button" class="btn btn-light btn-cancel"
+						onclick="location.href='/board/list'">취소</button>
+				</div>
+			</form>
+		</div>
+	</section>
+	<!-- Footer-->
+	<footer class="py-5 bg-dark footer-part">
+		<div class="container">
+			<p class="m-0 text-center text-white">Copyright &copy; Your
+				Website 2022</p>
+		</div>
+	</footer>
+	</div>
+	<!-- Bootstrap core JS-->
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+		//데이트피커 설정
+		$("#datepicker").datepicker({
+			language : 'ko'
+		});
+		
+		
+		//아이템 항목 추가 동적 HTML
+		const addBtn = document.querySelector('.btn-add');
+		const itemContainer = document.querySelector('.item-container');
+		
+		//항목 추가 버튼 클릭 시 이벤트
+		addBtn.addEventListener('click', () => {
+			let div = document.createElement('div');
+			div.setAttribute('class', 'input-group mb-3 temp-div-add')
+			
+			let itemInput = document.createElement('input');
+			itemInput.setAttribute('class', 'form-control vote-item-add');
+			itemInput.setAttribute('type', 'text');
+			itemInput.setAttribute('placeholder', '투표 항목 입력');
+			
+			let itemBtn = document.createElement('input');
+			itemBtn.setAttribute('type', 'button');
+			itemBtn.setAttribute('class', 'btn btn-secondary btn-item');
+			itemBtn.setAttribute('value', '추가');
+			
+			div.appendChild(itemInput);
+			div.appendChild(itemBtn);
+			
+			itemContainer.appendChild(div);
+			
+			const btnItem = document.querySelector('.btn-item');
+			btnItem.addEventListener('click', () => {
+				
+				const val = document.querySelector('.vote-item-add').value;
+				console.log(val);
+				
+				let item = document.createElement('input');
+				item.setAttribute('type', 'text');
+				item.setAttribute('name', 'item');
+				item.setAttribute('value', val);
+				item.setAttribute('class', 'form-control mb-3');
+				item.setAttribute('readonly', 'readonly');
+				
+				let target = document.querySelector('.temp-div-add');
+				target.remove();
+				
+				itemContainer.appendChild(item);
+			});
+		});
+		
+		//투표항목 수정 처리
+		function delItem(a){
+			var delBtn = document.querySelectorAll('.del-item');
+			var index;
+			for(var i=0; i<delBtn.length; i++){
+				if(delBtn[i]==a){
+					index = i;
+				}
+			}
+			
+			var delInoList = document.querySelectorAll('#ino');
+			var delIno = delInoList[index].value;
+			
+			fetch("/board/deleteitem", {
+				method: "POST",
+				headers: {
+					"Content-Type" : "application/json",
+				},
+				body: JSON.stringify({ino: delIno})
+			});
+			
+			var tempDiv = document.querySelectorAll('.temp-div');
+			tempDiv[index].remove();
+		}
+	</script>
+</body>
+</html>

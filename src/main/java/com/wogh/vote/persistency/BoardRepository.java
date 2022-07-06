@@ -1,5 +1,6 @@
 package com.wogh.vote.persistency;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,4 +33,12 @@ public interface BoardRepository extends JpaRepository<Board, Long>, BoardReposi
 			+ "on b.bno=i.board_num "
 			+ "group by i.board_num order by c desc limit 3", nativeQuery = true)
 	List<Board> findTop3();
+	
+	//마감체크
+	@Query("select b from Board b where b.closetime < :now")
+	List<Board> checkClose(@Param("now") LocalDateTime now);
+	
+	@EntityGraph(attributePaths = {"member"})
+	@Query("select b from Board b where b.member=:member")
+	Page<Board> findByFollow(@Param("member") Member member, Pageable pageable);
 }

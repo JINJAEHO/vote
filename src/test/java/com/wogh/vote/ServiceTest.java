@@ -29,6 +29,11 @@ public class ServiceTest {
 	@Autowired
 	private BoardService boardService;
 	
+	@Test
+	public void closeTest() {
+		boardService.checkClose();
+	}
+	
 	//@Test
 	public void boardRegiTest() {
 		BoardDTO boardDTO = BoardDTO.builder().title("제목")

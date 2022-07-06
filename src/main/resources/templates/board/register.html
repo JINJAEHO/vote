@@ -29,6 +29,9 @@
 </head>
 <body>
 	<div class="whole-container">
+	<!-- Navigation-->
+	<th:block th:replace="/layout/navybar.html :: fragment-navy">
+	</th:block>
 	<!-- Header-->
 	<header class="bg-dark py-5">
 		<div class="container px-4 px-lg-5 my-5">
@@ -42,6 +45,7 @@
 		<div class="container px-4 px-lg-5 mt-5">
 			<form action="/board/register" method="POST"
 				class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center main-content">
+				<input type="hidden" name="member_email" th:value="${session.userId}">
 				<div class="input-group mb-3">
 					<span class="input-group-text" id="basic-addon1" >제목</span> <input
 						type="text" class="form-control" placeholder="제목 입력" name="title"
@@ -50,7 +54,7 @@
 						<div class="input-group mb-3">
 							<span class="input-group-text">마감 일자</span> <input type="text"
 								class="form-control" aria-label="Amount (to the nearest dollar)"
-								name="closetime" id="datepicker">
+								name="closetimestr" id="datepicker" placeholder="미설정시 24시간 뒤 마감">
 						</div>
 					</div>
 				</div>
@@ -58,14 +62,15 @@
 					<span class="input-group-text">주제 및 설명</span>
 					<textarea class="form-control" aria-label="With textarea" rows="5" name="description"></textarea>
 				</div>
-				<div></div>
+				<div class="item-container"></div>
 				<div class="mb-3 item-add-btn-group">
-					<button type="button" class="btn btn-secondary"
+					<button type="button" class="btn btn-secondary btn-add"
 						style="width: 100px; height: 100px;">항목 추가</button>
 				</div>
 				<div class="mb-3 con-btn-gruop">
-					<button type="button" class="btn btn-dark">등록</button>
-					<button type="button" class="btn btn-light">취소</button>
+					<button type="submit" class="btn btn-dark btn-regi">등록</button>
+					<button type="button" class="btn btn-light btn-cancel"
+						onclick="location.href='/board/list'">취소</button>
 				</div>
 			</form>
 		</div>
@@ -89,6 +94,48 @@
 		
 		
 		//아이템 항목 추가 동적 HTML
+		const addBtn = document.querySelector('.btn-add');
+		const itemContainer = document.querySelector('.item-container');
+		
+		//항목 추가 버튼 클릭 시 이벤트
+		addBtn.addEventListener('click', () => {
+			let div = document.createElement('div');
+			div.setAttribute('class', 'input-group mb-3 temp-div')
+			
+			let itemInput = document.createElement('input');
+			itemInput.setAttribute('class', 'form-control vote-item');
+			itemInput.setAttribute('type', 'text');
+			itemInput.setAttribute('placeholder', '투표 항목 입력');
+			
+			let itemBtn = document.createElement('input');
+			itemBtn.setAttribute('type', 'button');
+			itemBtn.setAttribute('class', 'btn btn-secondary btn-item');
+			itemBtn.setAttribute('value', '추가');
+			
+			div.appendChild(itemInput);
+			div.appendChild(itemBtn);
+			
+			itemContainer.appendChild(div);
+			
+			const btnItem = document.querySelector('.btn-item');
+			btnItem.addEventListener('click', () => {
+				console.log("a");
+				
+				const val = document.querySelector('.vote-item').value;
+				
+				let item = document.createElement('input');
+				item.setAttribute('type', 'text');
+				item.setAttribute('name', 'item');
+				item.setAttribute('value', val);
+				item.setAttribute('class', 'form-control mb-3');
+				item.setAttribute('readonly', 'readonly');
+				
+				let target = document.querySelector('.temp-div');
+				target.remove();
+				
+				itemContainer.appendChild(item);
+			});
+		});
 		
 	</script>
 </body>

@@ -1,7 +1,10 @@
 package com.wogh.vote.service;
 
+import java.util.List;
+
 import org.mindrot.jbcrypt.BCrypt;
 
+import com.wogh.vote.dto.FollowDTO;
 import com.wogh.vote.dto.MemberDTO;
 import com.wogh.vote.model.Member;
 
@@ -22,6 +25,11 @@ public interface MemberService {
 	public MemberDTO getMember(MemberDTO memberDTO);
 	public String updateMember(MemberDTO memberDTO);
 	public String deleteMember(MemberDTO memberDTO);
+	
+	//팔로우 등록
+	String followMember(FollowDTO followDTO);
+	//팔로우 가져오기
+	List<FollowDTO> getFollow(String email);
 	
 	public default Member dtoToEntity(MemberDTO memberDTO) {
 		String password = "";

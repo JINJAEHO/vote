@@ -1,12 +1,17 @@
 package com.wogh.vote.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
+import com.wogh.vote.dto.FollowDTO;
 import com.wogh.vote.dto.MemberDTO;
+import com.wogh.vote.model.Follow;
 import com.wogh.vote.model.Member;
+import com.wogh.vote.persistency.FollowRepository;
 import com.wogh.vote.persistency.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -16,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberServiceImpl implements MemberService {
 	
 	private final MemberRepository memberRepository;
+	private final FollowRepository followRepository;
 	
 	@Override
 	public String checkEmail(String email) {
@@ -89,4 +95,34 @@ public class MemberServiceImpl implements MemberService {
 		return memberDTO.getEmail();
 	}
 
+	@Override //팔로우 처리
+	public String followMember(FollowDTO followDTO) {
+		Member member = memberRepository.findByEmail(followDTO.getMyEmail()).get(0);
+		
+		Optional<Follow> opt = followRepository.findByMemberAndYou(member, followDTO.getYou());
+		if(opt.isPresent()) {
+			return "팔로우중";
+		}
+		
+		Follow follow = Follow.builder().you(followDTO.getYou())
+										.member(member).build();
+		followRepository.save(follow);
+		return "팔로우성공";
+	}
+	
+	@Override //팔로우 가져오기
+	public List<FollowDTO> getFollow(String email) {
+		Member member = memberRepository.findByEmail(email).get(0);
+		List<Follow> list = followRepository.findByMember(member);
+		
+		List<FollowDTO> result = new ArrayList<>();
+		for(Follow follow : list) {
+			FollowDTO dto = FollowDTO.builder().fno(follow.getFno())
+												.you(follow.getYou())
+												.mno(member.getMno())
+												.build();
+			result.add(dto);
+		}
+		return result;
+	}
 }

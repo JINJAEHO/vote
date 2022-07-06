@@ -1,0 +1,55 @@
+@charset "UTF-8";
+
+.anony{
+	width:100px;
+	margin-right: 10px;
+}
+
+.vote-item{
+	width: 100%;
+	margin-bottom: 10px;
+}
+
+.item-box{
+	width: 400px;
+}
+
+.vote-col{
+	display: flex;
+	justify-content: flex-end;
+}
+
+.vote-anony{
+	display: flex;
+	justify-content: flex-end;
+}
+
+.detail-col{
+	display: flex;
+	justify-content: flex-start;
+}
+
+.count-span{
+	width: 50px;
+	margin-left: 10px;
+	text-align: center;
+}
+
+.btn-modi, .btn-del{
+	margin-right: 5px;
+}
+
+.member-container{
+	margin-bottom: 20px;
+	display: flex;
+	justify-content: flex-end;
+}
+
+.member{
+	width: 200px;
+	text-align: center;
+}
+
+.f-btn{
+	margin-right: 5px;
+}

@@ -17,3 +17,11 @@
 	display: flex;
 	justify-content: flex-end;
 }
+
+.item-container{
+	width: 100%;
+}
+
+select{
+	margin-right: 10px;
+}

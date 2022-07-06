@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www/thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title></title>
+</head>
+<body>
+	<div th:if="${result}==성공">
+		<script>
+			url = "/board/vote?bno=[[${bno}]]&member_email=[[${email}]]&page=[[${list.page}]]&type=[[${list.type}]]&keyword=[[${list.keyword}]]";
+			alert("투표에 참여하셨습니다");
+			location.href=url;
+		</script>
+	</div>
+	<div th:if="${result}==참여한투표">
+		<script>
+			url = "/board/vote?bno=[[${bno}]]&member_email=[[${email}]]&page=[[${list.page}]]&type=[[${list.type}]]&keyword=[[${list.keyword}]]";
+			alert("이미 참여한 투표입니다");
+			location.href=url;
+		</script>
+	</div>
+	<div th:if="${result}==삭제성공">
+		<script>
+			url = "/board/list";
+			alert("글이 삭제되었습니다");
+			location.href=url;
+		</script>
+	</div>
+	<div th:if="${result}==삭제실패">
+		<script>
+			url = "/board/vote?bno=[[${bno}]]";
+			alert("삭제에 실패했습니다. 다시 시도해주세요");
+			location.href=url;
+		</script>
+	</div>
+	<div th:if="${result}==수정성공">
+		<script>
+			url = "/board/vote?bno=[[${bno}]]";
+			alert("수정되었습니다");
+			location.href=url;
+		</script>
+	</div>
+</body>
+</html>

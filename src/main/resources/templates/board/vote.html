@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta name="description" content="" />
+<meta name="author" content="" />
+<title>투표 상세</title>
+<!-- Favicon-->
+<link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+<!-- Bootstrap icons-->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
+	rel="stylesheet" />
+<!-- Core theme CSS (includes Bootstrap)-->
+<link href="http://localhost/css/board/board-styles.css"
+	rel="stylesheet" />
+<link href="http://localhost/css/styles.css" rel="stylesheet" />
+<link href="http://localhost/css/board/regi.css" rel="stylesheet">
+<link href="http://localhost/css/board/vote.css" rel="stylesheet">
+</head>
+<body>
+	<div class="whole-container">
+	<!-- Navigation-->
+	<th:block th:replace="/layout/navybar.html :: fragment-navy">
+	</th:block>
+	<!-- Header-->
+	<header class="bg-dark py-5">
+		<div class="container px-4 px-lg-5 my-5">
+			<div class="text-center text-white">
+				<h1 class="display-4 fw-bolder">J VOTE</h1>
+				<p class="lead fw-normal text-white-50 mb-0"></p>
+			</div>
+		</div>
+	</header>
+	<input type="hidden" id="sessionId" th:value="${session.userId}">
+	<input type="hidden" id="writer" th:value="${result.member_email}">
+	<section class="py-5 main-section">
+		<div class="container px-4 px-lg-5 mt-5">
+		<div class="member-container">
+			<input th:if="${session.userId==result.member_email}" type="hidden" 
+				class="btn btn-primary f-btn" value="팔로우">
+			<input th:unless="${session.userId==result.member_email}" type="button" 
+				class="btn btn-primary f-btn" value="팔로우">
+			<input class="form-control member" type="text" th:value="${result.member_nickname}" aria-label="readonly input example" readonly>
+		</div>
+			<div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center main-content">
+				<div class="input-group mb-3">
+					<span class="input-group-text" id="basic-addon1">제목</span> <input
+						type="text" class="form-control" name="title" th:value="${result.title}" readonly
+						aria-label="Title" aria-describedby="basic-addon1" id="title">
+					<div style="margin-left: 50px;">
+						<div class="input-group mb-3">
+							<span class="input-group-text">마감 일자</span> <input type="text"
+								class="form-control" name="closetime" id="closetime"
+								th:value="${closetime}" readonly>
+						</div>
+					</div>
+				</div>
+				<div class="input-group mb-3">
+					<span class="input-group-text">주제 및 설명</span>
+					<textarea class="form-control" aria-label="With textarea" rows="5" name="description"
+						th:text="${result.description}" id="description" readonly></textarea>
+				</div>
+				<form class="item-container item-info">
+					<input type="hidden" th:value="${result.bno}" name="board_num" id="board_num">
+					<div class="vote-item" th:each="voteItem : ${result.voteItem}">
+						<div style="display: flex;">
+						<input th:if="${votedItem}==${voteItem.ino}" type="checkbox" class="btn-check item-box" 
+							id="btn-check" autocomplete="off" onclick="onCheckbox(this)" name="btn-check" 
+							th:attrappend="id= ${voteItem.ino}" checked>
+						<input th:unless="${votedItem}==${voteItem.ino}" type="checkbox" class="btn-check item-box" 
+							id="btn-check" autocomplete="off" onclick="onCheckbox(this)" name="btn-check" 
+							th:attrappend="id= ${voteItem.ino}">
+						<label class="btn btn-outline-secondary item-box lab-check" for="btn-check"
+							th:attrappend="for= ${voteItem.ino}">[[${voteItem.item}]]</label>
+						<span class="input-group-text count-span" id="basic-addon1">[[${voteItem.count}]]</span>
+						</div>
+						<input type="hidden" th:value="${voteItem.ino}" name="ino" id="ino">
+						<input type="hidden" th:value="${voteItem.item}" name="item" id="item">
+					</div>
+				</form>
+				<div class="con-btn-gruop row">
+					<div class="col-4 vote-col">
+						<input th:if="!${result.dead}" type="button" class="btn btn-outline-info vote-btn" value="투표하기">
+						<input th:unless="!${result.dead}" type="hidden" class="btn btn-outline-info vote-btn" value="투표하기">
+					</div>
+					<div class="col-4 detail-col">
+					</div>
+					<div class="col-4 vote-anony">
+						<!-- <input type="text" class="form-control anony" th:if="${result.anonymous == true}" 
+							value="공개투표" readonly>
+						<input type="text" class="form-control anony" th:unless="${result.anonymous == true}" 
+							value="비밀투표" readonly> -->
+						<input th:if="!${result.dead}" type="button" class="btn btn-outline-success btn-modi" value="수정">
+						<input th:unless="!${result.dead}" type="hidden" class="btn btn-outline-success btn-modi" value="수정">
+						<input th:unless="!${result.dead}" type="button" class="btn btn-outline-danger btn-del" value="삭제">
+						<input th:if="!${result.dead}" type="hidden" class="btn btn-outline-danger btn-del" value="삭제">
+						<input type="button" class="btn btn-dark btn-list" value="목록">
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Footer-->
+	<footer class="py-5 bg-dark footer-part">
+		<div class="container">
+			<p class="m-0 text-center text-white">Copyright &copy; Your
+				Website 2022</p>
+		</div>
+	</footer>
+	</div>
+	<!-- Bootstrap core JS-->
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+		//체크박스 중복 방지
+		function onCheckbox(a){
+			var obj = document.getElementsByName("btn-check");
+			var sel = document.querySelectorAll(".lab-check");
+			for(var i=0; i<obj.length; i++){
+				if(obj[i] != a){
+					obj[i].checked = false;
+				}
+			}
+		}
+		
+		//투표 처리
+		const vote = document.querySelector(".vote-btn");
+		vote.addEventListener('click', ()=> {
+			var obj = document.getElementsByName("btn-check");
+			var sel = document.querySelectorAll(".lab-check");
+			var ino = document.querySelectorAll("#ino");
+			var val, votedIno;
+			for(var i=0; i<obj.length; i++){
+				if(obj[i].checked == true){
+					val = sel[i].innerText;
+					votedIno = ino[i];
+				}
+			}
+			
+			let form = document.createElement("form");
+			form.setAttribute("action", "/board/result");
+			form.setAttribute("method", "POST");
+			
+			let item = document.createElement("input");
+			item.setAttribute("type", "text");
+			item.setAttribute("name", "item");
+			item.setAttribute("value", val);
+			
+			let url = new URL(location.href).searchParams;
+			
+			let page = url.get('page');
+			let type = url.get('type');
+			let keyword = url.get('keyword');
+			console.log(type)
+			
+			let pageInput = document.createElement("input");
+			pageInput.setAttribute("type", "text");
+			pageInput.setAttribute("name", "page");
+			pageInput.setAttribute("value", page);
+			
+			let typeInput = document.createElement("input");
+			typeInput.setAttribute("type", "text");
+			typeInput.setAttribute("name", "type");
+			typeInput.setAttribute("value", type);
+			
+			let keywordInput = document.createElement("input");
+			keywordInput.setAttribute("type", "text");
+			keywordInput.setAttribute("name", "keyword");
+			keywordInput.setAttribute("value", keyword);
+			
+			form.appendChild(item);
+			
+			form.appendChild(pageInput);
+			form.appendChild(typeInput);
+			form.appendChild(keywordInput);
+			
+			form.appendChild(votedIno);
+			var bno = document.querySelector("#board_num");
+			form.appendChild(bno);
+			
+			document.body.appendChild(form);
+			form.submit();
+		})
+		
+		//목록 버튼 처리
+		const list = document.querySelector('.btn-list');
+		list.addEventListener('click', ()=>{
+			let url = new URL(location.href).searchParams;
+			
+			let page = url.get('page')!=null ? url.get('page') : "";
+			let type = url.get('type')!=null ? url.get('type') : "";
+			let keyword = url.get('keyword')!=null ? url.get('keyword') : "";
+			
+			if(page!=""){
+				location.href = "/board/list?page="+page+"&type="+type+"&keyword="+keyword;
+			}else{
+				location.href = "/board/list";
+			}
+		})
+		
+		//수정 버튼 처리
+		const mod = document.querySelector('.btn-modi');
+		mod.addEventListener('click', () => {
+			var form = document.querySelector('.item-info');
+			
+			form.setAttribute("action", "/board/modify");
+			form.setAttribute("method", "GET");
+			
+			var bno = document.createElement('input');
+			bno.setAttribute('type', 'text');
+			bno.setAttribute('name', 'bno');
+			bno.setAttribute('value', "[[${result.bno}]]");
+			form.appendChild(bno);
+			
+			var title = document.querySelector('#title');
+			form.appendChild(title);
+			var closetime = document.querySelector('#closetime');
+			form.appendChild(closetime);
+			var des = document.querySelector('#description');
+			form.appendChild(des);
+			
+			form.submit();
+		});
+		
+		//삭제 버튼 처리
+		const del = document.querySelector(".btn-del");
+		del.addEventListener('click', () => {
+			var form = document.createElement('form');
+			
+			form.setAttribute('action', '/board/delete');
+			form.setAttribute('method', 'POST');
+			
+			var bno = document.createElement('input');
+			bno.setAttribute('type', 'text');
+			bno.setAttribute('name', 'bno');
+			bno.setAttribute('value', "[[${result.bno}]]");
+			
+			form.appendChild(bno);
+			
+			document.body.appendChild(form);
+			form.submit();
+		});
+		
+		//팔로우 버튼 처리
+		const fBtn = document.querySelector(".f-btn");
+		fBtn.addEventListener('click', () => {
+			me = document.querySelector('#sessionId').value;
+			you = document.querySelector('#writer').value;
+
+			fetch("/member/follow", {
+				method: "POST",
+				headers: {
+					"Content-Type" : "application/json",
+				},
+				body: JSON.stringify({myEmail: me, you: you})
+			})
+			.then((response) => response.json())
+			.then((data) => {
+				console.log(data);
+				if(data.result == "팔로우성공"){
+					alert(you+"님 을 팔로우하셨습니다");
+				}else if(data.result == "팔로우중"){
+					alert("이미 팔로중입니다");
+				}
+			});
+		});
+	</script>
+</body>
+</html>

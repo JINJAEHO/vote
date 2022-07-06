@@ -29,6 +29,8 @@ public class PageRequestBoardDTO {
 	public PageRequestBoardDTO() {
 		page = 1;
 		size = 8;
+		type = "";
+		keyword = "";
 	}
 	//페이지 번호와 데이터 개수를 가지고 Pageable 객체를 생성해주는 메서드
 	public Pageable getPageable(Sort sort) {
