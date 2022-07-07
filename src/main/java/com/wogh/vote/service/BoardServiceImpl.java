@@ -195,12 +195,32 @@ public class BoardServiceImpl implements BoardService {
 	}
 	
 	@Override //팔로워 최근 게시글
-	public BoardDTO getFollowerLatest(Long mno) {
-		Member member = Member.builder().mno(mno).build();
-		Sort sort = Sort.by("bno").descending();
-		Pageable pageable = PageRequest.of(0, 1, sort);
-		Page<Board> page = boardRepository.findByFollow(member, pageable);
+	public List<BoardDTO> getFollowerLatest(String email) {
+		Pageable pageable = PageRequest.of(0, 3);
+		List<Board> list = boardRepository.getLatestFollow(email, pageable);
 		
-		return entityToDto(page.getContent().get(0), 0);
+		List<BoardDTO> result = new ArrayList<>();
+		for(Board board : list) {
+			BoardDTO dto = entityToDto(board, 0);
+			result.add(dto);
+		}
+		return result;
+	}
+	
+	@Override
+	public PageResponseBoardDTO getListofFollow(PageRequestBoardDTO dto) {
+		Sort sort= Sort.by("bno").descending();
+		Pageable pageable = PageRequest.of(dto.getPage()-1, dto.getSize(), sort);
+		Page<Board> page = boardRepository.boardByFollow(dto);
+		
+		PageResponseBoardDTO result = new PageResponseBoardDTO();
+		result.setTotalPage(page.getTotalPages());
+		result.makePageList(pageable);
+		List<BoardDTO> list = new ArrayList<>();
+		page.get().forEach(item -> {
+			list.add(entityToDto(item, 0));
+		});
+		result.setBoardList(list);
+		return result;
 	}
 }

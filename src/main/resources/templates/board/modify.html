@@ -46,7 +46,7 @@
 			<form action="/board/modify" method="POST"
 				class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center main-content">
 				<input type="hidden" name="member_email" th:value="${session.userId}">
-				<input type="hidden" name="bno" th:value="${boardDTO.bno}">
+				<input type="hidden" name="bno" id="bno" th:value="${boardDTO.bno}">
 				<div class="input-group mb-3">
 					<span class="input-group-text" id="basic-addon1" >제목</span> <input
 						type="text" class="form-control" th:value="${boardDTO.title}" name="title"
@@ -82,9 +82,11 @@
 				</div>
 				<input th:unless="${canMod}==1" type="hidden" class="btn btn-secondary btn-add">
 				<div class="mb-3 con-btn-gruop">
-					<button type="submit" class="btn btn-dark btn-regi">수정</button>
+					<button type="button" class="btn btn-outline-danger btn-del">삭제</button>
+					<button type="submit" class="btn btn-dark btn-regi" 
+						style="margin-left: 5px; margin-right: 5px;">수정</button>
 					<button type="button" class="btn btn-light btn-cancel"
-						onclick="location.href='/board/list'">취소</button>
+						th:onclick="history.back()">취소</button>
 				</div>
 			</form>
 		</div>
@@ -175,6 +177,22 @@
 			var tempDiv = document.querySelectorAll('.temp-div');
 			tempDiv[index].remove();
 		}
+		
+		//삭제 버튼 처리
+		const del = document.querySelector(".btn-del");
+		del.addEventListener('click', () => {
+			var form = document.createElement('form');
+			
+			form.setAttribute('action', '/board/delete');
+			form.setAttribute('method', 'POST');
+			
+			bno = document.querySelector("#bno");
+			
+			form.appendChild(bno);
+			
+			document.body.appendChild(form);
+			form.submit();
+		});
 	</script>
 </body>
 </html>

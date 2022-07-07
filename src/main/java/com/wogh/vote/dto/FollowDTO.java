@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 public class FollowDTO {
 	private Long fno;
 	
-	private String you;
+	private String me;
 	
-	private String myEmail;
+	private String youEmail;
 	
 	private Long mno;
 }

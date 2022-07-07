@@ -14,6 +14,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.wogh.vote.dto.PageRequestBoardDTO;
 import com.wogh.vote.model.Board;
 import com.wogh.vote.model.QBoard;
+import com.wogh.vote.model.QFollow;
 import com.wogh.vote.model.QMember;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
 	
 	private QBoard board = QBoard.board;
 	private QMember member = QMember.member;
+	private QFollow follow = QFollow.follow;
 
 	@Override 
 	public Page<Board> searchByDynamicQuery(PageRequestBoardDTO dto){
@@ -70,5 +72,42 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
 	
 	private BooleanExpression containNickname(String type, String keyword) {
 		return type.equals("w") ? member.nickname.contains(keyword) : null;
+	}
+	
+	@Override
+	public Page<Board> boardByFollow(PageRequestBoardDTO dto) {
+		int page = dto.getPage()-1;
+		int size = dto.getSize();
+		
+		List<Board> list = query.selectFrom(board)
+								.join(board.member, member)
+								.fetchJoin()
+								.join(member.follows, follow)
+								.fetchJoin()
+								.where(containFollow(dto.getKeyword()))
+								.orderBy(board.bno.desc())
+								.offset(page*size)
+								.limit(size)
+								.fetch();
+		
+		long count = query.selectFrom(board)
+						.join(board.member, member)
+						.fetchJoin()
+						.join(member.follows, follow)
+						.fetchJoin()
+						.where(containFollow(dto.getKeyword()))
+						.orderBy(board.bno.desc())
+						.offset(page*size)
+						.limit(size)
+						.fetchCount();
+		
+		Sort sort = Sort.by("bno").descending();
+		Pageable pageable = PageRequest.of(dto.getPage()-1, dto.getSize(), sort);
+		
+		return new PageImpl<>(list, pageable, count);
+	}
+	
+	private BooleanExpression containFollow(String email) {
+		return follow.me.eq(email);
 	}
 }

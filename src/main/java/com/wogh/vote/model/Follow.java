@@ -19,16 +19,21 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@ToString(exclude = "member")
+@ToString(exclude = "fmember")
 public class Follow {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long fno;
 	
-	private String you;
+	private String me;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "me")
-	private Member member;
+	@JoinColumn(name = "you")
+	private Member fmember;
+	
+	public void changeMember(Member member) {
+		this.fmember = member;
+		member.getFollows().add(this);
+	}
 }

@@ -1,11 +1,17 @@
 package com.wogh.vote.model;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.mindrot.jbcrypt.BCrypt;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +25,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@ToString
+@ToString(exclude = "follows")
 public class Member extends BaseEntity{
 	
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,9 +45,15 @@ public class Member extends BaseEntity{
 	
 	@Column(name = "officialmark", columnDefinition = "boolean default false")
 	private boolean officialmark;
+	
+	@OneToMany(mappedBy = "fmember", fetch = FetchType.LAZY)
+	private List<Follow> follows;
 
 	public void changeMember(String password, String name, String nickname, boolean officialmark) {
-		if(password != null) this.password = password;
+		if(password != null) {
+			String pw = BCrypt.hashpw(password, BCrypt.gensalt());
+			this.password = pw;
+		}
 		if(name != null) this.name = name;
 		if(nickname != null) this.nickname = nickname;
 		if(officialmark != this.officialmark) this.officialmark = officialmark;

@@ -27,26 +27,12 @@
 		<div class="container px-4 px-lg-5 my-5">
 			<div class="text-center text-white">
 				<h1 class="display-4 fw-bolder">J VOTE</h1>
-				<p class="lead fw-normal text-white-50 mb-0">많은 투표가 당신을 기다리고있습니다</p>
+				<p class="lead fw-normal text-white-50 mb-0">팔로우한 회원의 투표들입니다.</p>
 			</div>
 		</div>
 	</header>
 	<!-- Section-->
 	<section class="py-5">
-		<div style="display:flex; justify-content:flex-end; margin-right: 3rem; margin-left: 10rem;">
-			<form action="/board/list">
-				<input type="hidden" name="page" th:value="${page.page}">
-				<select name="type">
-					<option value="">-------</option>
-					<option value="t">제목</option>
-					<option value="c">내용</option>
-					<option value="tc">제목+내용</option>
-					<option value="w">작성자</option>
-				</select>
-				<input style="width:200px;" type="text" name="keyword" placeholder="검색할 내용을 입력하세요"/>
-				<button type="submit" class="btn btn-light">검색</button>
-			</form>
-		</div>
 		<div class="container px-4 px-lg-5 mt-5">
 			<div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
 				<div class="col mb-5" th:each="list : ${list}">
@@ -66,8 +52,8 @@
 						<div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
 							<div class="text-center">
 								<a class="btn btn-outline-dark mt-auto"
-									th:href="@{/board/vote(bno=${list.bno}, member_email=${session.userId}
-										,page=${page.page}, type=${search.type}, keyword=${search.keyword})}">
+									th:href="@{/board/vote(bno=${list.bno}, me=${session.userId}
+										,page=${page.page}, type=f)}">
 									투표 보기
 								</a>
 							</div>
@@ -76,23 +62,19 @@
 				</div>
 			</div>
 		</div>
-		<div style="display:flex; justify-content:flex-end; margin-right: 3rem; margin-left: 10rem;">
-			<button type="button" class="btn btn-secondary" onclick="location.href='/board/register'">
-				투표 등록</button>
-		</div>
 		<nav aria-label="Page navigation example" style="display:flex; justify-content: center">
 			<ul class="pagination">
 				<li class="page-item" th:classappend="${page.prev} ? _ : disabled"><a class="page-link" 
-				th:href="@{/board/list(page=${page.start}-1, type=${search.type}, keyword=${search.keyword})}" 
+				th:href="@{/board/list(me=${session.userId}, page=${page.start}-1)}" 
 				aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
 				</a></li>
 				<li class="page-item" th:each="pageNum : ${page.pageList}"
 					th:classappend="${pageNum}==${page.page} ? active">
-					<a class="page-link" th:href="@{/board/list(page=${pageNum}, type=${search.type}, keyword=${search.keyword})}" 
+					<a class="page-link" th:href="@{/board/list(me=${session.userId}, page=${pageNum})}" 
 						th:text="${pageNum}" ></a>
 				</li>
 				<li class="page-item" th:classappend="${page.next} ? _ : disabled"><a class="page-link" 
-				th:href="@{/board/list(page=${page.end}+1, type=${search.type}, keyword=${search.keyword})}" 
+				th:href="@{/board/list(me=${session.userId}, page=${page.end}+1)}" 
 				aria-label="Next"> <span aria-hidden="true">&raquo;</span>
 				</a></li>
 			</ul>

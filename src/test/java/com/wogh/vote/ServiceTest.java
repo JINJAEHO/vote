@@ -14,12 +14,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.Rollback;
 
 import com.wogh.vote.dto.BoardDTO;
+import com.wogh.vote.dto.FollowDTO;
 import com.wogh.vote.dto.MemberDTO;
 import com.wogh.vote.dto.PageRequestBoardDTO;
 import com.wogh.vote.dto.VoteItemDTO;
 import com.wogh.vote.model.Board;
+import com.wogh.vote.model.Member;
 import com.wogh.vote.service.BoardService;
 import com.wogh.vote.service.ItemService;
+import com.wogh.vote.service.MemberService;
 
 @SpringBootTest
 @Transactional
@@ -29,7 +32,7 @@ public class ServiceTest {
 	@Autowired
 	private BoardService boardService;
 	
-	@Test
+	//@Test
 	public void closeTest() {
 		boardService.checkClose();
 	}
@@ -94,4 +97,19 @@ public class ServiceTest {
 		System.out.println(res);
 	}
 	
+	@Autowired
+	private MemberService memberService;
+	
+	//@Test
+	public void followTest() {
+		FollowDTO dto = FollowDTO.builder().me("wogh8@gmail.com")
+										.youEmail("wogh4@gmail.com").build();
+		memberService.followMember(dto);
+	}
+	
+	@Test
+	public void totalFollow() {
+		//memberService.getFollowing("wogh4@gmail.com");
+		memberService.getFollower("wogh9@gmail.com");
+	}
 }

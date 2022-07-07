@@ -1,6 +1,7 @@
 package com.wogh.vote.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -168,5 +169,24 @@ public class MemberController {
 		JSONObject json = new JSONObject(map);
 		
 		return json;
+	}
+	
+	//메뉴이동
+	@GetMapping("/menu")
+	public void menu() {
+		log.info("menu 이동");
+	}
+	
+	//팔로우 메뉴
+	@GetMapping("/follow")
+	public void follow(HttpSession session, Model model) {
+		log.info("follow 목록 요청");
+		String email = (String)session.getAttribute("userId");
+		
+		List<FollowDTO> follower = memberService.getFollower(email);
+		List<FollowDTO> following = memberService.getFollowing(email);
+		
+		model.addAttribute("followerList", follower);
+		model.addAttribute("followingList", following);
 	}
 }

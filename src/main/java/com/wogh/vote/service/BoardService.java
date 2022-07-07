@@ -32,7 +32,9 @@ public interface BoardService {
 	
 	public PageResponseBoardDTO getList(PageRequestBoardDTO dto);
 	//팔로워 최근 게시글 조회
-	BoardDTO getFollowerLatest(Long mno);
+	List<BoardDTO> getFollowerLatest(String email);
+	//팔로워들의 전체 글 조회
+	PageResponseBoardDTO getListofFollow(PageRequestBoardDTO dto);
 	
 	//마감 체크
 	void checkClose();

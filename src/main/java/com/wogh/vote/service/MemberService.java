@@ -28,8 +28,11 @@ public interface MemberService {
 	
 	//팔로우 등록
 	String followMember(FollowDTO followDTO);
-	//팔로우 가져오기
-	List<FollowDTO> getFollow(String email);
+	
+	//팔로워 가져오기
+	List<FollowDTO> getFollower(String email);
+	//팔로잉 가져오기
+	List<FollowDTO> getFollowing(String email);
 	
 	public default Member dtoToEntity(MemberDTO memberDTO) {
 		String password = "";

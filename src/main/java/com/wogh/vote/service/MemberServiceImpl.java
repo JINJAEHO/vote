@@ -97,30 +97,43 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override //팔로우 처리
 	public String followMember(FollowDTO followDTO) {
-		Member member = memberRepository.findByEmail(followDTO.getMyEmail()).get(0);
+		Member member = memberRepository.findByEmail(followDTO.getYouEmail()).get(0);
 		
-		Optional<Follow> opt = followRepository.findByMemberAndYou(member, followDTO.getYou());
+		Optional<Follow> opt = followRepository.findByMeAndFmember(followDTO.getMe(), member);
 		if(opt.isPresent()) {
 			return "팔로우중";
 		}
 		
-		Follow follow = Follow.builder().you(followDTO.getYou())
-										.member(member).build();
+		Follow follow = Follow.builder().me(followDTO.getMe())
+										.fmember(member).build();
 		followRepository.save(follow);
 		return "팔로우성공";
 	}
 	
-	@Override //팔로우 가져오기
-	public List<FollowDTO> getFollow(String email) {
+	@Override
+	public List<FollowDTO> getFollower(String email) {
 		Member member = memberRepository.findByEmail(email).get(0);
-		List<Follow> list = followRepository.findByMember(member);
+		List<Follow> list = followRepository.findByFmember(member);
 		
 		List<FollowDTO> result = new ArrayList<>();
 		for(Follow follow : list) {
 			FollowDTO dto = FollowDTO.builder().fno(follow.getFno())
-												.you(follow.getYou())
-												.mno(member.getMno())
-												.build();
+											.me(follow.getMe())
+											.youEmail(email).build();
+			result.add(dto);
+		}
+		return result;
+	}
+	
+	@Override
+	public List<FollowDTO> getFollowing(String email) {
+		List<Follow> list = followRepository.findByMe(email);
+		
+		List<FollowDTO> result = new ArrayList<>();
+		for(Follow follow : list) {
+			FollowDTO dto = FollowDTO.builder().fno(follow.getFno())
+											.me(email)
+											.youEmail(follow.getFmember().getEmail()).build();
 			result.add(dto);
 		}
 		return result;

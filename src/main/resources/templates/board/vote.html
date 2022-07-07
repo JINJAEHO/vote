@@ -93,10 +93,14 @@
 							value="공개투표" readonly>
 						<input type="text" class="form-control anony" th:unless="${result.anonymous == true}" 
 							value="비밀투표" readonly> -->
-						<input th:if="!${result.dead}" type="button" class="btn btn-outline-success btn-modi" value="수정">
-						<input th:unless="!${result.dead}" type="hidden" class="btn btn-outline-success btn-modi" value="수정">
-						<input th:unless="!${result.dead}" type="button" class="btn btn-outline-danger btn-del" value="삭제">
-						<input th:if="!${result.dead}" type="hidden" class="btn btn-outline-danger btn-del" value="삭제">
+						<input th:if="!${result.dead} and ${result.member_email}==${session.userId}" 
+							type="button" class="btn btn-outline-success btn-modi" value="수정">
+						<input th:if="!${result.dead}" 
+							type="hidden" class="btn btn-outline-danger btn-del" value="삭제">
+						<input th:if="!${result.dead}" 
+							type="hidden" class="btn btn-outline-success btn-modi" value="수정">
+						<input th:if="${result.dead} and ${result.member_email}==${session.userId}" 
+							type="button" class="btn btn-outline-danger btn-del" value="삭제">
 						<input type="button" class="btn btn-dark btn-list" value="목록">
 					</div>
 				</div>
@@ -193,9 +197,12 @@
 			let page = url.get('page')!=null ? url.get('page') : "";
 			let type = url.get('type')!=null ? url.get('type') : "";
 			let keyword = url.get('keyword')!=null ? url.get('keyword') : "";
+			let me = url.get('me')!=null ? url.get('me') : "";
 			
-			if(page!=""){
+			if(page!="" && type!="f"){
 				location.href = "/board/list?page="+page+"&type="+type+"&keyword="+keyword;
+			}else if(type=="f"){
+				location.href = "/board/follow?page="+page+"&type="+type+"&me="+me;
 			}else{
 				location.href = "/board/list";
 			}
@@ -255,7 +262,7 @@
 				headers: {
 					"Content-Type" : "application/json",
 				},
-				body: JSON.stringify({myEmail: me, you: you})
+				body: JSON.stringify({me: me, youEmail: you})
 			})
 			.then((response) => response.json())
 			.then((data) => {
@@ -263,7 +270,7 @@
 				if(data.result == "팔로우성공"){
 					alert(you+"님 을 팔로우하셨습니다");
 				}else if(data.result == "팔로우중"){
-					alert("이미 팔로중입니다");
+					alert("이미 팔로우 중입니다");
 				}
 			});
 		});

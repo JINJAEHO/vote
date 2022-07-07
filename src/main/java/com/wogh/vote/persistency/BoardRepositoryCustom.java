@@ -6,10 +6,11 @@ package com.wogh.vote.persistency;
 
 import org.springframework.data.domain.Page;
 
-import com.wogh.vote.dto.BoardDTO;
 import com.wogh.vote.dto.PageRequestBoardDTO;
 import com.wogh.vote.model.Board;
 
 public interface BoardRepositoryCustom {
 	public Page<Board> searchByDynamicQuery(PageRequestBoardDTO dto);
+	
+	Page<Board> boardByFollow(PageRequestBoardDTO dto);
 }

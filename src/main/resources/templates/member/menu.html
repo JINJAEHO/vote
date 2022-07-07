@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Heroic Features - Start Bootstrap Template</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <!-- Bootstrap icons-->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="http://localhost/css/member/menu-styles.css" rel="stylesheet" />
+        <link href="http://localhost/css/footer.css" rel="stylesheet" />
+        <link href="http://localhost/css/member/menu.css" rel="stylesheet" />
+    </head>
+    <body>
+	    <!-- Navigation-->
+		<th:block th:replace="/layout/navybar.html :: fragment-navy">
+		</th:block>
+        <!-- Header-->
+        <header class="py-5">
+        </header>
+    	<div id="body-wrapeer">
+    	<div id="body-content">
+        <!-- Page Content-->
+        <section class="pt-4 wrapper">
+            <div class="container px-lg-5">
+                <!-- Page Features-->
+                <div class="row gx-lg-5">
+                    <div class="col-lg-6 col-xxl-4 mb-5">
+                        <div class="card bg-light border-0 h-100">
+                            <div class="card-body text-center">
+                                <a class="fs-4 fw-bold" href="/member/mypage">회원 정보</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-xxl-4 mb-5">
+                        <div class="card bg-light border-0 h-100">
+                            <div class="card-body text-center">
+                            	<a class="fs-4 fw-bold" href="/member/follow">팔로우</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-xxl-4 mb-5">
+                        <div class="card bg-light border-0 h-100">
+                            <div class="card-body text-center">
+                            	<a class="fs-4 fw-bold">작성한 글</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-xxl-4 mb-5">
+                        <div class="card bg-light border-0 h-100">
+                            <div class="card-body text-center">
+                            	<a class="fs-4 fw-bold">참여한 투표</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        </div>
+        <!-- Footer-->
+        <footer class="py-5 bg-dark foot">
+            <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2022</p></div>
+        </footer>
+        </div>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>

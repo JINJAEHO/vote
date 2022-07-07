@@ -185,4 +185,19 @@ public class BoardController {
 	public void deleteItem(@RequestBody VoteItemDTO itemDTO) {
 		itemService.deleteItem(itemDTO);
 	}
+	
+	@GetMapping("/follow")
+	public void followBoardList(String me, PageRequestBoardDTO dto, Model model) {
+		log.info("팔로우 리스트 요청");
+
+		if(dto == null) {
+			dto = new PageRequestBoardDTO();
+		}
+		
+		dto.setKeyword(me);
+		
+		PageResponseBoardDTO response = boardService.getListofFollow(dto);
+		model.addAttribute("list", response.getBoardList());
+		model.addAttribute("page", response);
+	}
 }

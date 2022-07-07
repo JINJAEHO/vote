@@ -38,7 +38,6 @@ public interface BoardRepository extends JpaRepository<Board, Long>, BoardReposi
 	@Query("select b from Board b where b.closetime < :now")
 	List<Board> checkClose(@Param("now") LocalDateTime now);
 	
-	@EntityGraph(attributePaths = {"member"})
-	@Query("select b from Board b where b.member=:member")
-	Page<Board> findByFollow(@Param("member") Member member, Pageable pageable);
+	@Query("select b from Board b join fetch b.member m join fetch m.follows f where f.me = :me order by b.bno desc")
+	List<Board> getLatestFollow(@Param("me") String me, Pageable pageable);
 }
