@@ -50,7 +50,7 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override //로그인 처리
-	public int memberLogin(MemberDTO memberDTO) {
+	public Long memberLogin(MemberDTO memberDTO) {
 		
 		List<Member> result = memberRepository.findByEmail(memberDTO.getEmail());
 		
@@ -58,13 +58,13 @@ public class MemberServiceImpl implements MemberService {
 			
 			Member member = result.get(0);
 			if(BCrypt.checkpw(memberDTO.getPassword(), member.getPassword())) {
-				return 1;
+				return member.getMno();
 			}else {
-				return -1;
+				return -1L;
 			}
 		}
 		
-		return 0;
+		return 0L;
 	}
 
 	@Override //멤버 조회

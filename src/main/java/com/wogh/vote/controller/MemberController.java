@@ -8,6 +8,9 @@ import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
 import org.json.simple.JSONObject;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +21,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wogh.vote.dto.FollowDTO;
 import com.wogh.vote.dto.MemberDTO;
+import com.wogh.vote.dto.PageRequestBoardDTO;
+import com.wogh.vote.dto.PageResponseBoardDTO;
+import com.wogh.vote.service.BoardService;
 import com.wogh.vote.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
@@ -30,6 +36,7 @@ import lombok.extern.log4j.Log4j2;
 public class MemberController {
 	
 	private final MemberService memberService;
+	private final BoardService boardService;
 	
 	private boolean loginStat(HttpSession session) {
 		Object loginSession = session.getAttribute("userLogin");
@@ -95,10 +102,11 @@ public class MemberController {
 	//로그인 처리
 	@PostMapping("/login")
 	public String loginPro(MemberDTO dto, HttpSession session, Model model) {
-		int result = memberService.memberLogin(dto);
-		if(result == 1) { //로그인 성공 시
+		Long result = memberService.memberLogin(dto);
+		if(result != -1 && result != 0) { //로그인 성공 시
 			session.setAttribute("userLogin", "login");
 			session.setAttribute("userId", dto.getEmail());
+			session.setAttribute("userNum", result);
 			return "redirect:/";
 		}
 		model.addAttribute("loginCheck", 0);
@@ -110,6 +118,7 @@ public class MemberController {
 	public String logoutPro(HttpSession session) {
 		session.removeAttribute("userLogin");
 		session.removeAttribute("userId");
+		session.removeAttribute("userNum");
 		return "redirect:/";
 	}
 	
@@ -188,5 +197,34 @@ public class MemberController {
 		
 		model.addAttribute("followerList", follower);
 		model.addAttribute("followingList", following);
+	}
+	
+	//작성한 글
+	@GetMapping("/myboard")
+	public void myBoard(PageRequestBoardDTO dto, HttpSession session, Model model) {
+		log.info("작성한 글 요청");
+		int page = dto.getPage()-1;
+		int size = dto.getSize();
+		
+		Sort sort = Sort.by("bno").descending();
+		
+		Pageable pageable = PageRequest.of(page, size, sort);
+		Long mno = (Long)session.getAttribute("userNum");
+		
+		PageResponseBoardDTO res = boardService.getListByMember(mno, pageable);
+		model.addAttribute("result", res);
+	}
+	
+	//참여한 투표들
+	@GetMapping("/attendvote")
+	public void attVote(PageRequestBoardDTO dto, HttpSession session, Model model) {
+		log.info("참여한 투표 요청");
+		Sort sort = Sort.by("bno").descending();
+		Pageable pageable = PageRequest.of(dto.getPage()-1, dto.getSize(), sort);
+		
+		String email = (String)session.getAttribute("userId");
+		
+		PageResponseBoardDTO res = boardService.attendBoard(pageable, email);
+		model.addAttribute("result", res);
 	}
 }

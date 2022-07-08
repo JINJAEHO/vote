@@ -1,6 +1,5 @@
 package com.wogh.vote.dto;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -31,9 +30,9 @@ public class BoardDTO {
 	
 	private String member_nickname;
 	
-	private LocalDateTime regdate;
+	private String regdate;
 	
-	private LocalDateTime moddate;
+	private String moddate;
 	
 	private List<VoteItemDTO> voteItem;
 }

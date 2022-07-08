@@ -16,21 +16,20 @@ import com.wogh.vote.model.Member;
 
 public interface BoardRepository extends JpaRepository<Board, Long>, BoardRepositoryCustom {
 	
+	//글 상세 정보 조회
 	@EntityGraph(attributePaths = {"member", "items"})
 	@Query(value =  "select b from Board b where b.bno = :bno",
 			countQuery = "select count(b) from Board b where b.bno = :bno")
 	public Optional<Board> findByIdWithJoin(@Param("bno") Long id);
 	
-	public Page<Board> findByAnonymous(boolean anonymous, Pageable pageable);
+	//특정 회원의 글 조회
+	public Page<Board> findByMember(Member member, Pageable pageable);
 	
-	@EntityGraph(attributePaths = {"member"})
-	@Query(value = "select b from Board b where b.member = :member order by b.bno desc", 
-			countQuery = "select count(b) from Board b where b.member = :member")
-	public Page<Board> findByMember(@Param("member") Member member, Pageable pageable);
-	
+	//가장 투표수가 많은 글 조회
 	@Query(value="select b.*, "
 			+ "sum(i.count) c from board as b left join voteitem as i "
 			+ "on b.bno=i.board_num "
+			+ "where b.dead = false "
 			+ "group by i.board_num order by c desc limit 3", nativeQuery = true)
 	List<Board> findTop3();
 	
@@ -38,6 +37,7 @@ public interface BoardRepository extends JpaRepository<Board, Long>, BoardReposi
 	@Query("select b from Board b where b.closetime < :now")
 	List<Board> checkClose(@Param("now") LocalDateTime now);
 	
+	//팔로워 글 중 가장 최신글 3개 조회
 	@Query("select b from Board b join fetch b.member m join fetch m.follows f where f.me = :me order by b.bno desc")
 	List<Board> getLatestFollow(@Param("me") String me, Pageable pageable);
 }

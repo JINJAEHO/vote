@@ -32,6 +32,20 @@ public class RepositoryTest {
 	@Autowired
 	private BoardRepository boardRepository;
 	
+	@Test
+	public void attendTest() {
+		Sort sort = Sort.by("bno").descending();
+		Pageable pageable = PageRequest.of(1, 10, sort);
+		boardRepository.boardByAttend(pageable, "wogh4@gmail.com");
+	}
+	
+	//@Test
+	public void memberboard() {
+		Member member = Member.builder().mno(7L).build();
+		Pageable pageable= PageRequest.of(0, 10);
+		boardRepository.findByMember(member, pageable);
+	}
+	
 	//@Test
 	public void followCustoemTest() {
 		PageRequestBoardDTO dto = PageRequestBoardDTO.builder().page(1)

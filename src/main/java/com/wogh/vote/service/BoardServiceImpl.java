@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.wogh.vote.dto.BoardDTO;
-import com.wogh.vote.dto.MemberDTO;
 import com.wogh.vote.dto.PageRequestBoardDTO;
 import com.wogh.vote.dto.PageResponseBoardDTO;
 import com.wogh.vote.dto.VoteItemDTO;
@@ -134,9 +133,20 @@ public class BoardServiceImpl implements BoardService {
 	}
 	
 	@Override //특정 멤버의 전체 글 가져오기
-	public Page<Board> getListByMember(MemberDTO memberDTO, Pageable pageable) {
-		Member findMember = memberRepository.getById(memberDTO.getMno());
-		return boardRepository.findByMember(findMember, pageable);
+	public PageResponseBoardDTO getListByMember(Long mno, Pageable pageable) {
+		Member findMember = Member.builder().mno(mno).build();
+		Page<Board> page = boardRepository.findByMember(findMember, pageable);
+		
+		PageResponseBoardDTO result = new PageResponseBoardDTO();
+		result.setTotalPage(page.getTotalPages());
+		result.makePageList(pageable);
+		List<BoardDTO> list = new ArrayList<>();
+		page.get().forEach(item -> {
+			list.add(entityToDto(item, 3));
+		});
+		result.setBoardList(list);
+		
+		return result;
 	}
 
 	@Override //글 수정
@@ -212,6 +222,21 @@ public class BoardServiceImpl implements BoardService {
 		Sort sort= Sort.by("bno").descending();
 		Pageable pageable = PageRequest.of(dto.getPage()-1, dto.getSize(), sort);
 		Page<Board> page = boardRepository.boardByFollow(dto);
+		
+		PageResponseBoardDTO result = new PageResponseBoardDTO();
+		result.setTotalPage(page.getTotalPages());
+		result.makePageList(pageable);
+		List<BoardDTO> list = new ArrayList<>();
+		page.get().forEach(item -> {
+			list.add(entityToDto(item, 0));
+		});
+		result.setBoardList(list);
+		return result;
+	}
+	
+	@Override
+	public PageResponseBoardDTO attendBoard(Pageable pageable, String email) {
+		Page<Board> page = boardRepository.boardByAttend(pageable, email);
 		
 		PageResponseBoardDTO result = new PageResponseBoardDTO();
 		result.setTotalPage(page.getTotalPages());

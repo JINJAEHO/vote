@@ -20,7 +20,7 @@ public interface MemberService {
 	public String insertMember(MemberDTO memberDTO);
 	
 	//로그인
-	public int memberLogin(MemberDTO memberDTO);
+	public Long memberLogin(MemberDTO memberDTO);
 
 	public MemberDTO getMember(MemberDTO memberDTO);
 	public String updateMember(MemberDTO memberDTO);

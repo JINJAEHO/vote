@@ -62,14 +62,6 @@ public class ServiceTest {
 	}
 	
 	//@Test
-	public void boardByMemberTest() {
-		Pageable pageable = PageRequest.of(0, 3);
-		MemberDTO dto = MemberDTO.builder().mno(1L).build();
-		Page<Board> page = boardService.getListByMember(dto, pageable);
-		System.out.println(page.getContent().get(0).getBno());
-	}
-	
-	//@Test
 	public void topTest() {
 		List<BoardDTO> list = boardService.mostPopluar();
 		for(BoardDTO dto : list) {

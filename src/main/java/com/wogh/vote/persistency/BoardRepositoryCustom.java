@@ -5,6 +5,7 @@
 package com.wogh.vote.persistency;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.wogh.vote.dto.PageRequestBoardDTO;
 import com.wogh.vote.model.Board;
@@ -13,4 +14,6 @@ public interface BoardRepositoryCustom {
 	public Page<Board> searchByDynamicQuery(PageRequestBoardDTO dto);
 	
 	Page<Board> boardByFollow(PageRequestBoardDTO dto);
+	
+	Page<Board> boardByAttend(Pageable pageable, String email);
 }

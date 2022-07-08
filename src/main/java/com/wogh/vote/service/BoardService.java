@@ -5,11 +5,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.wogh.vote.dto.BoardDTO;
-import com.wogh.vote.dto.MemberDTO;
 import com.wogh.vote.dto.PageRequestBoardDTO;
 import com.wogh.vote.dto.PageResponseBoardDTO;
 import com.wogh.vote.dto.VoteItemDTO;
@@ -24,7 +22,7 @@ public interface BoardService {
 
 	public BoardDTO getBoard(BoardDTO dto);
 	
-	public Page<Board> getListByMember(MemberDTO memberDTO, Pageable pageable);
+	public PageResponseBoardDTO getListByMember(Long mno, Pageable pageable);
 	
 	public Long updateBoard(BoardDTO dto);
 	
@@ -40,6 +38,8 @@ public interface BoardService {
 	void checkClose();
 	
 	List<BoardDTO> mostPopluar();
+	
+	PageResponseBoardDTO attendBoard(Pageable pageable, String email);
 	
 	public default Board dtoToEntity(BoardDTO dto) {
 		String str = dto.getClosetime();
@@ -58,6 +58,7 @@ public interface BoardService {
 	
 	public default BoardDTO entityToDto(Board board, int check) {
 		String closetime = board.getClosetime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+		String regdate = board.getRegDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 		Member member = new Member();
 		
 		List<VoteItemDTO> voteItem = new ArrayList<>();
@@ -83,6 +84,7 @@ public interface BoardService {
 										.title(board.getTitle())
 										.description(board.getDescription())
 										.closetime(closetime)
+										.regdate(regdate)
 										.dead(board.isDead())
 										.anonymous(board.isAnonymous())
 										.member_id(member.getMno())

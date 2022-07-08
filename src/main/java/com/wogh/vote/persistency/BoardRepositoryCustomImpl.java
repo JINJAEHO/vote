@@ -16,6 +16,8 @@ import com.wogh.vote.model.Board;
 import com.wogh.vote.model.QBoard;
 import com.wogh.vote.model.QFollow;
 import com.wogh.vote.model.QMember;
+import com.wogh.vote.model.QVoteDetail;
+import com.wogh.vote.model.QVoteItem;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +30,8 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
 	private QBoard board = QBoard.board;
 	private QMember member = QMember.member;
 	private QFollow follow = QFollow.follow;
+	private QVoteItem item = QVoteItem.voteItem;
+	private QVoteDetail detail = QVoteDetail.voteDetail;
 
 	@Override 
 	public Page<Board> searchByDynamicQuery(PageRequestBoardDTO dto){
@@ -109,5 +113,37 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
 	
 	private BooleanExpression containFollow(String email) {
 		return follow.me.eq(email);
+	}
+	
+	@Override
+	public Page<Board> boardByAttend(Pageable pageable, String email) {
+		int page = pageable.getPageNumber();
+		int size = pageable.getPageSize();
+		
+		List<Board> list = query.select(board)
+				.from(detail)
+				.join(detail.voteitem, item)
+				.join(item.board, board)
+				.join(board.member, member)
+				.fetchJoin()
+				.where(detail.voter.eq(email))
+				.orderBy(board.bno.desc())
+				.offset(page*size)
+				.limit(size)
+				.fetch();
+		
+		Long count = query.select(board).distinct()
+				.from(detail)
+				.join(detail.voteitem, item)
+				.join(item.board, board)
+				.join(board.member, member)
+				.fetchJoin()
+				.where(detail.voter.eq(email))
+				.orderBy(board.bno.desc())
+				.offset(page*size)
+				.limit(size)
+				.fetchCount();
+		
+		return new PageImpl<>(list, pageable, count);
 	}
 }
